@@ -1,0 +1,46 @@
+.InteractionBlocker {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  cursor: pointer;
+  color: #fff;
+}
+
+.InteractionBlocker .background {
+  height: 100%;
+  width: 100%;
+  transition: opacity 0.2s linear;
+  opacity: 0;
+  background-color: #000;
+}
+
+.InteractionBlocker:hover .background {
+  opacity: 0.3;
+  transition: opacity 0.2s linear;
+}
+
+.InteractionBlocker.smallScreen .background {
+  opacity: 0.3;
+  transition: opacity 0.2s linear;
+}
+
+.InteractionBlocker.smallScreen .text {
+  display: block;
+}
+
+.InteractionBlocker .text {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.InteractionBlocker:hover .text {
+  display: block;
+}

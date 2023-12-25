@@ -1,0 +1,32 @@
+.loader {
+  /* height: 40vmin; */
+  pointer-events: none;
+  animation: loader infinite 3s ease-in-out;
+  width: 120;
+  height: 120;
+  margin: 'auto';
+
+  /* animation: loader infinite 3s infinite; */
+}
+
+@keyframes loader {
+  0% {
+    transform: translate(-25px, 12.5px);
+  }
+
+  25% {
+    transform: translate(0, 25px);
+  }
+
+  50% {
+    transform: translate(25px, 12.5px);
+  }
+
+  75% {
+    transform: translate(0px, 0px);
+  }
+
+  100% {
+    transform: translate(-25px, 12.5px);
+  }
+}

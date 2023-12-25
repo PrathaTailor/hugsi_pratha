@@ -1,0 +1,40 @@
+.modal {
+  font-size: '1rem';
+  background-color: white;
+  border: 0.1rem solid #99c93c;
+  border-radius: 0.5rem;
+  width: 24rem;
+}
+.modal > .header {
+  width: 100%;
+  /* border-bottom: 0.5rem solid gray; */
+  font-size: 1.5rem;
+  font-weight: bold;
+  /* text-align: center; */
+  padding: 2rem 1.5rem 0.5rem;
+}
+.modal > .content {
+  /* width: 100%; */
+  padding: 0.5rem;
+  margin: 2rem 1rem;
+  border: 0.1rem solid #698d29;
+  border-radius: 0.5rem;
+}
+.modal > .actions {
+  margin: auto;
+}
+.modal > .actions {
+  width: 100%;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.messageInputField {
+  margin: '0 auto';
+  background-color: 'white';
+  border-radius: '0.5rem';
+}
+
+.messageInputField > .Mui-focused {
+  background-color: 'white';
+}

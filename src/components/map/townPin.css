@@ -1,0 +1,53 @@
+.markerWrapper {
+  transform: translate(-50%, -100%);
+}
+
+.pin {
+  font-size: 1em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker {
+  color: #698d29;
+}
+
+.marker:hover {
+  color: #f35321;
+}
+
+.pin.semi-large {
+  font-size: 1.5em;
+}
+
+.pin.large {
+  font-size: 2em;
+}
+
+.cityPopup {
+  color: #fff;
+  z-index: 1;
+  text-align: center;
+}
+
+.cityPopup .cityId {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.cityPopup .ranking {
+  font-size: 14px;
+}
+
+/* I'm sorry. Trying to select .mapboxgl-popup-tip */
+.cityPopup > :nth-child(1) {
+  border-right-color: #000 !important;
+}
+
+/* So sorry. Trying to select .mapboxgl-popup-content */
+.cityPopup > :nth-child(2) {
+  padding: 5px 10px;
+  background-color: #000;
+}

@@ -1,0 +1,534 @@
+import React, { useState } from 'react';
+import { useSiteMetadata } from 'hooks';
+import addSubscriber from '../../api/addSubscriber';
+import storePartnerInputs from '../../api/storePartnerInputs';
+import storeUserInputs from '../../api/storeUserInputs';
+import { Box, Typography, Button, TextField, Checkbox, useMediaQuery, } from '@material-ui/core';
+import { useStyles, theme } from './style';
+import { ThemeProvider } from '@material-ui/core/styles';
+
+/**
+ * Mail connect component
+ */
+const PartnerConnect = props => {
+  const {
+    withLeftAndRightSpace,
+    userInputField,
+    messageInputField,
+  } = useStyles({});
+  const smallScreen = useMediaQuery('(max-width:960px)');
+  const [userName, setUserName] = useState<string>('');
+  const [userEmailAddress, setUserEmailAddress] = useState<string>('');
+  const [companyName, setCompanyName] = useState<string>('');
+  const [userMessage, setUserMessage] = useState<string>('');
+  const [isSubmitted, setSubmitted] = useState<boolean>(false);
+  const [isSubscribed, setSubscribed] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState<boolean>(true);
+  const [checked, setChecked] = React.useState(false);
+  const { apiKey, userInputsEndpoint } = useSiteMetadata();
+  const [emailFieldError, setEmailFieldError] = useState('');
+  const [nameError, setNameError] = useState<boolean>(false);
+  const [messageError, setMessageError] = useState<boolean>(false);
+  const [checkBoxError, setCheckBoxError] = useState<boolean>(false);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
+  const setInitialFormState = () => {
+    setUserName('');
+    setUserEmailAddress('');
+    setCompanyName('');
+    setUserMessage('');
+  };
+
+  const addPartner = (e, subscriptionStatus: boolean) => {
+    e.preventDefault();
+    storePartnerInputs(userInputsEndpoint, apiKey, {
+      emailAddress: userEmailAddress,
+      username: userName,
+      partnerCompany: companyName,
+      partnerMessage: `${userMessage}`,
+      isSubscribed: subscriptionStatus,
+    });
+  };
+
+  const addUser = (e, status: boolean) => {
+    e.preventDefault();
+    addSubscriber(userInputsEndpoint, apiKey, userEmailAddress, userName);
+    storeUserInputs(userInputsEndpoint, apiKey, 'subscription', {
+      emailAddress: userEmailAddress,
+      isSubscribed: true,
+    });
+  };
+
+  const validateEmail = (userEmailAddress: string) => {
+    const regexExpEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regexExpEmail.test(userEmailAddress);
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Box style={{ marginTop: '6.25rem' }}>
+        {showForm && (
+          <div
+            style={{
+              backgroundColor: '#99c93c',
+              height: 'auto',
+              margin: '0 auto',
+              zIndex: 4,
+            }}
+          >
+            {isSubmitted ||
+              (typeof window !== 'undefined' &&
+                localStorage.getItem('userDetailsStatus') === 'submitted' &&
+                localStorage.getItem('isUserSubscribed') &&
+                localStorage.getItem('isUserSubscribed') !== 'Yes') ? (
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <Box
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: smallScreen ? '16rem' : '32rem',
+                  }}
+                >
+                  <Typography
+                    variant={'h5'}
+                    style={{
+                      color: 'white',
+                      margin: '4rem 0rem 1rem 0rem',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {`Thank you`}
+                    {userName ? ` ${userName}` : ``}
+                    {` for reaching out to us! We will contact you to start a dialog on partnership as soon as possible.`}
+                    <br />
+                    {`Team HUGSI`}
+                  </Typography>
+
+                  <Typography
+                    variant={'body1'}
+                    style={{
+                      color: 'white',
+                      margin: '1rem auto',
+                      marginBottom: '2rem',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {isSubscribed
+                      ? `You’re now subscribed to our newsletter. Awesome!`
+                      : `Would you like to subscribe to our newsletter as well?`}
+                  </Typography>
+                </Box>
+                {!isSubscribed && (
+                  <Box
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      className={'notSubscribedButton'}
+                      style={{
+                        color: 'white',
+                        margin: '1rem 0',
+                        textTransform: 'none',
+                        borderRadius: '8px',
+                        marginRight: '1rem',
+                        borderColor: 'white',
+                      }}
+                      size={'large'}
+                      onClick={() => {
+                        typeof window !== 'undefined' &&
+                          localStorage.setItem(
+                            'userDetailsStatus',
+                            'submitted'
+                          );
+                        setInitialFormState();
+                        setShowForm(false);
+                      }}
+                    >
+                      Not at this moment
+                    </Button>
+
+                    <Button
+                      variant="outlined"
+                      style={{
+                        color: 'white',
+                        margin: '1rem 0',
+                        textTransform: 'none',
+                        borderRadius: '8px',
+                        backgroundColor: '#698d29',
+                        marginLeft: '1rem',
+                      }}
+                      size={'large'}
+                      onClick={e => {
+                        addUser(e, true);
+                        if (typeof window !== 'undefined') {
+                          localStorage.setItem(
+                            'userDetailsStatus',
+                            'subscribed'
+                          );
+                          localStorage.setItem('isUserSubscribed', 'Yes');
+                        }
+                        setSubscribed(true);
+                        setInitialFormState();
+                      }}
+                    >
+                      Yes please!
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            ) : (
+              <main
+                className={smallScreen ? 'smallRoot' : 'largeRoot'}
+                style={{ padding: smallScreen ? '3rem 2.5rem' : '4rem 14rem' }}
+              >
+                <section
+                  className={withLeftAndRightSpace}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(20rem, 1fr))',
+                    gridGap: '1.2rem',
+                    backgroundColor: '#99c93c',
+                  }}
+                >
+                  <Box style={{ display: 'flex', flexDirection: 'column' }}>
+                    <Box
+                      style={{
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        fontSize: smallScreen ? '1.8rem' : '2.2rem',
+                        maxWidth: smallScreen ? '20rem' : '28rem',
+                      }}
+                    >
+                      {`Interested in becoming a HUGSI partner?`}
+                    </Box>
+                    {
+                      <Box
+                        style={{
+                          color: '#fff',
+                          fontWeight: 'bold',
+                          fontSize: smallScreen ? '1rem' : '1.2rem',
+                          maxWidth: smallScreen ? '25rem' : '28rem',
+                          paddingTop: '2rem',
+                        }}
+                      >
+                        Please use the form to let us know that you would like
+                        to discuss a partnership. We will contact you as soon as
+                        possible to start a dialog.
+                      </Box>
+                    }
+                  </Box>
+                  <Box>
+                    <Box
+                      style={{
+                        paddingBottom: '1rem',
+                      }}
+                    >
+                      {nameError && (
+                        <Box style={{ color: 'red' }}>
+                          Please enter your name
+                        </Box>
+                      )}
+                      <TextField
+                        inputProps={{
+                          style: {
+                            fontSize: '1.25rem',
+                            borderRadius: '0.5rem',
+                            backgroundColor: 'white',
+                          },
+                        }}
+                        InputLabelProps={{
+                          style: {
+                            color: '#698d29',
+                          },
+                        }}
+                        id="name"
+                        label="Name*"
+                        variant="filled"
+                        autoComplete="off"
+                        classes={{
+                          root: userInputField,
+                        }}
+                        style={{ width: smallScreen ? '20rem' : '34rem' }}
+                        onChange={event => {
+                          setUserName(event.target.value);
+                        }}
+                        value={userName}
+                      />
+                    </Box>
+                    <Box
+                      style={{
+                        paddingBottom: '1rem',
+                      }}
+                    >
+                      {emailFieldError === 'empty' && (
+                        <Box style={{ color: 'red' }}>
+                          Please enter your email address
+                        </Box>
+                      )}
+                      {emailFieldError === 'invalid' && (
+                        <Box style={{ color: 'red' }}>
+                          Please enter a valid email address
+                        </Box>
+                      )}
+                      <TextField
+                        inputProps={{
+                          style: {
+                            fontSize: '1.25rem',
+                            borderRadius: '0.5rem',
+                            backgroundColor: 'white',
+                          },
+                        }}
+                        InputLabelProps={{
+                          style: {
+                            color: '#698d29',
+                          },
+                        }}
+                        id="email"
+                        label="Your email*"
+                        variant="filled"
+                        classes={{
+                          root: userInputField,
+                        }}
+                        style={{
+                          width: smallScreen ? '20rem' : '34rem',
+                        }}
+                        onChange={event => {
+                          setUserEmailAddress(event.target.value);
+                        }}
+                        value={userEmailAddress}
+                      />
+                    </Box>
+                    {
+                      <Box>
+                        <Box
+                          style={{
+                            paddingBottom: '1rem',
+                          }}
+                        >
+                          <TextField
+                            inputProps={{
+                              style: {
+                                fontSize: '1.25rem',
+                                borderRadius: '0.5rem',
+                                backgroundColor: 'white',
+                              },
+                            }}
+                            InputLabelProps={{
+                              style: {
+                                color: '#698d29',
+                              },
+                            }}
+                            id="company"
+                            label="Company"
+                            variant="filled"
+                            classes={{
+                              root: userInputField,
+                            }}
+                            style={{
+                              width: smallScreen ? '20rem' : '34rem',
+                            }}
+                            onChange={event => {
+                              setCompanyName(event.target.value);
+                            }}
+                            value={companyName}
+                          />
+                        </Box>
+
+                        <Box
+                          style={{
+                            paddingBottom: '1rem',
+                          }}
+                        >
+                          {messageError && (
+                            <Box style={{ color: 'red' }}>
+                              Please provide your message
+                            </Box>
+                          )}
+                          <TextField
+                            id="message"
+                            label="Message*"
+                            inputProps={{
+                              style: {
+                                fontSize: '1.25rem',
+                                borderRadius: '0.5rem',
+                                backgroundColor: 'white',
+                              },
+                            }}
+                            InputLabelProps={{
+                              style: {
+                                color: '#698d29',
+                              },
+                            }}
+                            multiline
+                            rows={7}
+                            classes={{
+                              root: messageInputField,
+                            }}
+                            style={{
+                              width: smallScreen ? '20rem' : '34rem',
+                              borderRadius: '0.5rem',
+                            }}
+                            onChange={event => {
+                              setUserMessage(event.target.value);
+                            }}
+                            value={userMessage}
+                            variant="filled"
+                          />
+                        </Box>
+                      </Box>
+                    }
+                    {checkBoxError && (
+                      <Box style={{ color: 'red' }}>
+                        Please select the below checkbox
+                      </Box>
+                    )}
+                    <Box
+                      style={{
+                        width: smallScreen ? '20rem' : '34rem',
+                        color: 'white',
+                        display: 'flex',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onChange={handleChange}
+                        size={smallScreen ? 'small' : 'medium'}
+                        style={{
+                          color: '#689d29',
+                          alignItems: 'flex-start',
+                        }}
+                        inputProps={{ 'aria-label': 'primary checkbox' }}
+                      />
+                      <Typography style={{ fontSize: '0.75rem' }}>
+                        You understand that when you click on submit, Husqvarna
+                        AB (publ.) and its affiliate companies will use your
+                        personal data to respond to you. If you indicate that
+                        you want to receive our newsletter, we will also use
+                        your personal data to send you such newsletters. We will
+                        always use your personal data in accordance with our
+                        {` `}
+                        {
+                          <a
+                            href={
+                              'https://privacyportal.husqvarnagroup.com/uk/privacy-notice/'
+                            }
+                            target="_blank"
+                            style={{
+                              color: '#698d29',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            {`Privacy Notice`}
+                          </a>
+                        }
+                        . You will find more information about how we process
+                        your data, who we may share it with, what rights you
+                        have and further contact details to us in the Privacy
+                        Notice. You can withdraw your consent to our newsletter
+                        at any time by clicking the unsubscribe button in any
+                        communication you receive from us or by contacting us as
+                        set out in the Privacy Notice.
+                      </Typography>
+                    </Box>
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      marginTop={smallScreen ? '1rem' : '1.5rem'}
+                      padding={smallScreen ? '0rem' : '0.5rem'}
+                      style={{
+                        justifyContent: 'space-between',
+                        width: smallScreen ? '20rem' : '34rem',
+                        marginTop: smallScreen ? '2rem' : '1rem',
+                      }}
+                    >
+                      <Typography
+                        style={{ color: '#293845', margin: 'auto 0' }}
+                      >
+                        <i
+                          className="fas fa-asterisk"
+                          style={{ color: '#698d29', marginRight: '1rem' }}
+                        ></i>
+                        Required information
+                      </Typography>
+                      <Button
+                        style={{
+                          fontWeight: 'bold',
+                          color: 'white',
+                          backgroundColor: '#698d29',
+                          textDecoration: 'none',
+                          textTransform: 'none',
+                          borderRadius: '0.5rem',
+                          fontSize: '0.8rem',
+                          width: '6rem',
+                          height: '2.5rem',
+                        }}
+                        type="submit"
+                        onClick={event => {
+                          if (
+                            validateEmail(userEmailAddress) &&
+                            checked &&
+                            userName &&
+                            userMessage
+                          ) {
+                            setSubmitted(true);
+                            addPartner(event, false);
+
+                            setEmailFieldError('');
+                            setCheckBoxError(false);
+                            typeof window !== 'undefined' &&
+                              localStorage.setItem('isUserSubscribed', 'Yes');
+                          } else {
+                            if (!userEmailAddress) {
+                              setEmailFieldError('empty');
+                            } else if (!validateEmail(userEmailAddress)) {
+                              setEmailFieldError('invalid');
+                            } else {
+                              setEmailFieldError('');
+                            }
+                            if (!checked) {
+                              setCheckBoxError(true);
+                            } else {
+                              setCheckBoxError(false);
+                            }
+                            if (!userName) {
+                              setNameError(true);
+                            } else {
+                              setNameError(false);
+                            }
+                            if (!userMessage) {
+                              setMessageError(true);
+                            } else {
+                              setMessageError(false);
+                            }
+                          }
+                        }}
+                      >
+                        Submit
+                      </Button>
+                    </Box>
+                  </Box>
+                </section>
+              </main>
+            )}
+          </div>
+        )}
+        {/* <Divider /> */}
+      </Box>
+    </ThemeProvider>
+  );
+};
+export default PartnerConnect;

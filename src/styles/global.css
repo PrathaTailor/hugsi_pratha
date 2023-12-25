@@ -1,0 +1,60 @@
+:root {
+  --pageMaxWidth: 1440px;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background-color: white;
+}
+
+body::-webkit-scrollbar{
+  display: none;
+}
+
+svg {
+  border-radius: 1.5rem;
+}
+
+@font-face {
+  font-family: TradeGothicNextLTPro-Lt;
+  src: url('//db.onlinewebfonts.com/t/72eadd18f904323febf7fefb086fde78.woff');
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: TradeGothicNextLTPro-Lt;
+  src: url('//db.onlinewebfonts.com/t/72eadd18f904323febf7fefb086fde78.woff');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: TradeGothicNextLTPro-Lt;
+  src: url('//db.onlinewebfonts.com/t/72eadd18f904323febf7fefb086fde78.woff');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: TradeGothicNextLTPro-Lt;
+  src: url('//db.onlinewebfonts.com/t/72eadd18f904323febf7fefb086fde78.woff');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: TradeGothicNextLTPro-Lt;
+  src: url('//db.onlinewebfonts.com/t/72eadd18f904323febf7fefb086fde78.woff');
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: TradeGothicNextLTPro-Lt;
+  src: url('//db.onlinewebfonts.com/t/72eadd18f904323febf7fefb086fde78.woff');
+  font-weight: 700;
+  font-style: italic;
+}
